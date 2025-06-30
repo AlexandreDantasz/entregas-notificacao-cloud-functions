@@ -11,8 +11,8 @@ public class CriptografiaService
 
   public CriptografiaService()
   {
-    Key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("ChaveCriptografia"));
-    IV = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("IVCriptografia"));
+    Key = Convert.FromBase64String(Environment.GetEnvironmentVariable("ChaveCriptografia"));
+    IV = Convert.FromBase64String(Environment.GetEnvironmentVariable("IVCriptografia"));
   }
 
   public Result<string> DescriptografarString(string dadosCriptografados)
@@ -27,7 +27,7 @@ public class CriptografiaService
       ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
       // Buffer na memória (como um arquivo na RAM), recebendo os dados a serem descriptografados
-      using (MemoryStream msDecrypt = new MemoryStream(Encoding.UTF8.GetBytes(dadosCriptografados)))
+      using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(dadosCriptografados)))
       {
         // Stream que irá descriptografar todos os dados que estejam na sua fonte (msDecrycpt) 
         using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
