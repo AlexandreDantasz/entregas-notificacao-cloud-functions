@@ -49,7 +49,7 @@ public class EmailService : INotificacaoService
       EmailDestinatario =  _criptografiaService.DescriptografarString(emailCriptografado.EmailDestinatario).Value,
       ServidorDeEmail = _criptografiaService.DescriptografarString(emailCriptografado.ServidorDeEmail).Value,
       Credenciais = _criptografiaService.DescriptografarString(emailCriptografado.Credenciais).Value,
-      Porta = int.Parse(_criptografiaService.DescriptografarString(emailCriptografado.Porta.ToString()).Value)
+      Porta = _criptografiaService.DescriptografarString(emailCriptografado.Porta).Value
     };
 
     emailRemetente = new MailAddress(emailDescriptografado.EmailRemetente);
@@ -57,7 +57,7 @@ public class EmailService : INotificacaoService
 
     smtpClient = new SmtpClient(emailDescriptografado.ServidorDeEmail)
     {
-      Port = emailDescriptografado.Porta,
+      Port = int.Parse(emailDescriptografado.Porta),
       Credentials = new NetworkCredential(emailRemetente.Address, emailDescriptografado.Credenciais),
       EnableSsl = true
     };

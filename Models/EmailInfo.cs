@@ -9,5 +9,5 @@ public class EmailInfo : NotificacaoBase
   public required string EmailDestinatario { get; set; } = string.Empty;
   public required string ServidorDeEmail { get; set; } = string.Empty;
   public required string Credenciais { get; set; } = string.Empty;
-  public required int Porta { get; set; }
+  public required string Porta { get; set; }
 }
