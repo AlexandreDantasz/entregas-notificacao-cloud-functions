@@ -19,6 +19,11 @@ public class CriptografiaService
   {
     string dadosDescriptografados = string.Empty;
 
+    if (dadosCriptografados is null)
+    {
+      dadosCriptografados = string.Empty; 
+    }
+
     using (Aes aesAlg = Aes.Create()) 
     {
       aesAlg.Key = Key;
