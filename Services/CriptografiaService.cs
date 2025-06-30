@@ -11,8 +11,12 @@ public class CriptografiaService
 
   public CriptografiaService()
   {
-    Key = Convert.FromBase64String(Environment.GetEnvironmentVariable("ChaveCriptografia"));
-    IV = Convert.FromBase64String(Environment.GetEnvironmentVariable("IVCriptografia"));
+    Key = Convert.FromBase64String(
+      Environment.GetEnvironmentVariable("ChaveCriptografia") ?? "O+MPn4IhYCzaLR/RGSRXw9jaIp8nbY4BaRSWMGUsN4w="
+    );
+    IV = Convert.FromBase64String(
+      Environment.GetEnvironmentVariable("IVCriptografia") ?? "zjHnEod66pcF46+zWvhY8Q=="
+    );
   }
 
   public Result<string> DescriptografarString(string dadosCriptografados)
