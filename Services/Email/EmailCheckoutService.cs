@@ -48,10 +48,12 @@ public class EmailCheckoutService : IEmailAcaoService
             Text = body
           };
 
+          // APENAS PARA TESTE, RETIRAR EM PRODUÇÃO
+          _logger.LogInfo($"Credenciais: {config.Credenciais}");
+          await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
+
           if (client.Capabilities.HasFlag(SmtpCapabilities.Authentication))
           { 
-            // ISSO NÃO DEVE IR PARA PRODUÇÃO, É APENAS PARA TESTE
-            _logger.LogInfo($"Credenciais: {config.Credenciais}");
             await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
           }
 
