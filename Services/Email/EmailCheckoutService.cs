@@ -35,7 +35,7 @@ public class EmailCheckoutService : IEmailAcaoService
       {
         try
         {
-          await client.ConnectAsync(config.ServidorDeEmail, int.Parse(config.Porta), SecureSocketOptions.SslOnConnect);
+          await client.ConnectAsync(config.ServidorDeEmail, int.Parse(config.Porta), SecureSocketOptions.Auto);
 
           MimeMessage mimeMessage = new MimeMessage();
 
