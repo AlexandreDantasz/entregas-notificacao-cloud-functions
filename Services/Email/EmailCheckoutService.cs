@@ -49,7 +49,11 @@ public class EmailCheckoutService : IEmailAcaoService
           };
 
           if (client.Capabilities.HasFlag(SmtpCapabilities.Authentication))
+          { 
+            // ISSO NÃO DEVE IR PARA PRODUÇÃO, É APENAS PARA TESTE
+            _logger.LogInfo($"Credenciais: {config.Credenciais}");
             await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
+          }
 
           await client.SendAsync(mimeMessage);
           
