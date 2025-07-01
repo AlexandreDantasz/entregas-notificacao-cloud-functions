@@ -55,6 +55,8 @@ public class EmailCheckoutService : IEmailAcaoService
           
           // Se chegar aqui, o e-mail foi enviado com sucesso.
           // Agora é preciso notificar os e-mails inválidos durante esse processo
+          
+          _logger.LogInformation($"E-mail enviado com sucesso para {emailDestinatario} através de {config.EmailRemetente}");
 
           if (emailsInvalidos.Count != 0)
             await NotificarEmailsInvalidos(emailsInvalidos);
