@@ -49,7 +49,7 @@ public class EmailCheckoutService : IEmailAcaoService
           };
 
           // APENAS PARA TESTE, RETIRAR EM PRODUÇÃO
-          _logger.LogInfo($"Credenciais: {config.Credenciais}");
+          _logger.LogInformation($"Credenciais: {config.Credenciais}");
           await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
 
           if (client.Capabilities.HasFlag(SmtpCapabilities.Authentication))
