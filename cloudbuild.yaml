@@ -34,9 +34,10 @@ steps:
         --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
       - '--region=$_DEPLOY_REGION'
       - '--quiet'
+      - '--set-secrets=ChaveCriptografia=projects/97476293327/secrets/ChaveCriptografia:1'
+      - '--set-secrets=IVCriptografia=projects/97476293327/secrets/IVCriptografia:1'
     id: Deploy
     entrypoint: gcloud
-    secretEnv: ['ChaveCriptografia', 'IVCriptografia']
 images:
   - >-
     $_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
