@@ -1,10 +1,9 @@
 using System.Text;
 using System.Text.Json;
+using MimeKit; // Para MailboxAddress
 using Notificacoes.Models;
 using Notificacoes.Factories;
 using Notificacoes.Enums;
-using System.Net;
-using System.Net.Mail;
 using Microsoft.Extensions.Logging;
 
 namespace Notificacoes.Services;
@@ -13,11 +12,10 @@ public class EmailService : INotificacaoService
 {
   private readonly ILogger _logger;
 
-  private MailAddress emailRemetente;
-  private MailAddress emailDestinatario;
+  private string emailDestinatario;
   private string mensagem = string.Empty;
-  private SmtpClient smtpClient;
   private EAcaoEmail acao;
+  private List<EmailConfig> _configuracoes = new List<EmailConfig>(); 
 
   private readonly CriptografiaService _criptografiaService;
  
@@ -29,10 +27,10 @@ public class EmailService : INotificacaoService
 
   public Task Enviar()
   {
-    EmailAcoesFactory factoryEmailAcoes = new EmailAcoesFactory(_logger);
+    EmailAcoesFactory factoryEmailAcoes = new EmailAcoesFactory(_logger, _criptografiaService);
     IEmailAcaoService acaoService = factoryEmailAcoes.CriarServicoParaAcao(acao);
 
-    acaoService.Enviar(emailRemetente, emailDestinatario, smtpClient, mensagem);
+    acaoService.Enviar(emailDestinatario, _configuracoes, mensagem);
 
     return Task.CompletedTask;
   }
@@ -40,29 +38,22 @@ public class EmailService : INotificacaoService
   public void Inicializar(string data)
   {
     EmailInfo emailCriptografado = JsonSerializer.Deserialize<EmailInfo>(data); 
+    
+    acao = emailCriptografado.AcaoEmail;
+    mensagem = _criptografiaService.DescriptografarString(emailCriptografado.Mensagem).Value;
+    emailDestinatario = _criptografiaService.DescriptografarString(emailCriptografado.EmailDestinatario).Value;
 
-    EmailInfo emailDescriptografado = new EmailInfo 
+    foreach (EmailConfig config in emailCriptografado.Configuracoes)
     {
-      AcaoEmail = emailCriptografado.AcaoEmail,
-      Mensagem = _criptografiaService.DescriptografarString(emailCriptografado.Mensagem).Value,
-      EmailRemetente =  _criptografiaService.DescriptografarString(emailCriptografado.EmailRemetente).Value,
-      EmailDestinatario =  _criptografiaService.DescriptografarString(emailCriptografado.EmailDestinatario).Value,
-      ServidorDeEmail = _criptografiaService.DescriptografarString(emailCriptografado.ServidorDeEmail).Value,
-      Credenciais = _criptografiaService.DescriptografarString(emailCriptografado.Credenciais).Value,
-      Porta = _criptografiaService.DescriptografarString(emailCriptografado.Porta).Value
-    };
+      EmailConfig configDescriptografada = new EmailConfig 
+      {
+        EmailRemetente = _criptografiaService.DescriptografarString(config.EmailRemetente).Value,
+        ServidorDeEmail = _criptografiaService.DescriptografarString(config.ServidorDeEmail).Value,
+        Credenciais = _criptografiaService.DescriptografarString(config.Credenciais).Value,
+        Porta = _criptografiaService.DescriptografarString(config.Porta).Value
+      };
 
-    emailRemetente = new MailAddress(emailDescriptografado.EmailRemetente);
-    emailDestinatario = new MailAddress(emailDescriptografado.EmailDestinatario);
-
-    smtpClient = new SmtpClient(emailDescriptografado.ServidorDeEmail)
-    {
-      Port = int.Parse(emailDescriptografado.Porta),
-      Credentials = new NetworkCredential(emailRemetente.Address, emailDescriptografado.Credenciais),
-      EnableSsl = true
-    };
-
-    acao = emailDescriptografado.AcaoEmail;
-    mensagem = emailDescriptografado.Mensagem;
+      _configuracoes.Add(configDescriptografada);
+    }
   }
 }

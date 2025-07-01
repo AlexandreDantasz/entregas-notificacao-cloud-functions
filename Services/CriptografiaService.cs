@@ -14,9 +14,40 @@ public class CriptografiaService
     Key = Convert.FromBase64String(
       Environment.GetEnvironmentVariable("ChaveCriptografia") ?? "O+MPn4IhYCzaLR/RGSRXw9jaIp8nbY4BaRSWMGUsN4w="
     );
+
     IV = Convert.FromBase64String(
       Environment.GetEnvironmentVariable("IVCriptografia") ?? "zjHnEod66pcF46+zWvhY8Q=="
     );
+  }
+
+  public Result<string> CriptografarString(string dado)
+  {
+    using (Aes aesAlg = Aes.Create())
+    {
+      aesAlg.Key = Key;
+      aesAlg.IV = IV;
+
+      ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+      // Buffer na memória (como um arquivo na RAM), recebendo os dados a serem descriptografados
+      using (MemoryStream msEncrypt = new MemoryStream())
+      {
+        // Stream que irá descriptografar todos os dados que estejam na sua fonte (msDecrycpt) 
+        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+        {
+          using (StreamWriter swEncrypt = new StreamWriter(csEncrypt)) 
+          {
+            // Escrevendo o dado 
+            swEncrypt.Write(dado);
+          }
+        }
+
+        return Result<string>.Ok(Convert.ToBase64String(msEncrypt.ToArray()));
+      }
+
+    }
+    
+    return Result<string>.Failure("Ocorreu um erro ao tentar criptografdar os dados");
   }
 
   public Result<string> DescriptografarString(string dadosCriptografados)
