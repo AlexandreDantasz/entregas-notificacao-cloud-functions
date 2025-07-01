@@ -14,8 +14,8 @@ steps:
     entrypoint: pack
   - name: gcr.io/cloud-builders/docker
     env:
-      - ProjectId=titanium-vision-464414-i3
-      - TopicId=notificacoes-invalidas
+      - 'ProjectId=titanium-vision-464414-i3'
+      - 'TopicId=notificacoes-invalidas'
     args:
       - push
       - >-
@@ -58,10 +58,8 @@ tags:
   - notificacao-worker
 availableSecrets:
   secretManager:
-    - versionName: >-
-        projects/titanium-vision-464414-i3/secrets/ChaveCriptografia/versions/latest
+    - versionName: projects/97476293327/secrets/ChaveCriptografia/versions/latest
       env: 'ChaveCriptografia'
-    - versionName: >-
-        projects/titanium-vision-464414-i3/secrets/IVCriptografia/versions/latest
+    - versionName: projects/97476293327/secrets/IVCriptografia/versions/latest
       env: 'IVCriptografia'
 
