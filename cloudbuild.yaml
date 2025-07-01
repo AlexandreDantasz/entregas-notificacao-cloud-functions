@@ -58,8 +58,8 @@ tags:
   - notificacao-worker
 availableSecrets:
   secretManager:
-    - versionName: projects/97476293327/secrets/ChaveCriptografia
+    - versionName: projects/97476293327/secrets/ChaveCriptografia/versions/1
       env: 'ChaveCriptografia'
-    - versionName: projects/97476293327/secrets/IVCriptografia
+    - versionName: projects/97476293327/secrets/IVCriptografia/versions/1
       env: 'IVCriptografia'
 
