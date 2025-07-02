@@ -35,9 +35,6 @@ public class EmailCheckoutService : IEmailAcaoService
       {
         try
         {
-          // APENAS PARA TESTE, RETIRAR EM PRODUÇÃO
-          _logger.LogInformation($"Credenciais: {config.Credenciais}, {config.Porta}, {config.ServidorDeEmail}");
-          
           await client.ConnectAsync(config.ServidorDeEmail, int.Parse(config.Porta), SecureSocketOptions.Auto);
 
           MimeMessage mimeMessage = new MimeMessage();
@@ -51,12 +48,8 @@ public class EmailCheckoutService : IEmailAcaoService
             Text = body
           };
 
-          await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
-
           if (client.Capabilities.HasFlag(SmtpCapabilities.Authentication))
-          { 
             await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
-          }
 
           await client.SendAsync(mimeMessage);
           
