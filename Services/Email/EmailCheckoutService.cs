@@ -47,10 +47,17 @@ public class EmailCheckoutService : IEmailAcaoService
           {
             Text = body
           };
+          
+
+          _logger.LogInformation("Verificando necessidade de autenticação...");
 
           if (client.Capabilities.HasFlag(SmtpCapabilities.Authentication))
+          {
+            _logger.LogInformation("Autenticação necessária. Autenticando com credenciais...");
             await client.AuthenticateAsync(config.EmailRemetente, config.Credenciais);
-
+          }
+          
+          _logger.LogInformation("Enviando e-mail...");
           await client.SendAsync(mimeMessage);
           
           // Se chegar aqui, o e-mail foi enviado com sucesso.
